@@ -1,0 +1,98 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.grid-headers {
+  width: 500px;
+  height: 50px;
+  display: flex;
+}
+
+.grid-headers header:first-of-type {
+  flex: 1.5;
+  background-color: lavender;
+}
+
+.grid-headers header:last-of-type {
+  flex: 5;
+  border-left: 2px solid black;
+  padding-left: 4px;
+  padding-right: 4px;
+  background-color: orange;
+}
+
+.grid-headers header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.category-headers {
+  width: 500px;
+  height: 50px;
+  display: flex;
+}
+
+.category-headers div {
+  flex: 1.5;
+  background-color: lavender;
+}
+
+.category-headers header {
+  flex: 1;
+  background-color: orange;
+  border-left: 2px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid {
+  width: 500px;
+  height: 500px;
+  background-color: aquamarine;
+  display: flex;
+}
+
+.rewards-col, .categories-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rewards-col {
+  background-color: lavender;
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.categories-col {
+  background-color: orange;
+  border-left: 2px solid black;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.rewards-col div {
+  height: 40px;
+  width: 40px;
+  background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.categories-col div {
+  height: 40px;
+  width: 40px;
+  background-color: green;
+}
+
