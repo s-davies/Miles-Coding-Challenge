@@ -81,18 +81,39 @@ body {
   justify-content: space-around;
 }
 
-.rewards-col div {
-  height: 40px;
-  width: 40px;
+.rewards-col > div > div {
+  height: 50px;
+  width: 50px;
   background-color: red;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: grab;
+  z-index: 1;
+  position: absolute;
 }
 
-.categories-col div {
-  height: 40px;
-  width: 40px;
+.rewards-col > div {
+  height: 50px;
+  width: 50px;
   background-color: green;
+  position: relative;
+}
+
+.drop {
+  height: 50px;
+  width: 50px;
+  background-color: green;
+}
+
+.drop div {
+  position: relative;
+}
+
+.drop div b {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  cursor: pointer;
 }
 
