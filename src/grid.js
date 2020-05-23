@@ -87,7 +87,18 @@ export default class Grid {
   }
 
   redo (event) {
-
+    this.allMovesIdx += 1;
+    const moveData = this.allMoves[this.allMovesIdx];
+    const dropToEnable = $(`#${moveData.prevDrop}`);
+    const dropToDisable = $(`#${moveData.curDrop}`);
+    const draggable = $(`#${moveData.draggable}`);
+    dropToEnable.droppable("option", "disabled", false);
+    dropToDisable.droppable("option", "disabled", true);
+    draggable.position({
+      of: dropToDisable
+    });
+    //reset parent data for draggable element
+    draggable[0].dataset.parent = moveData.curDrop;
   }
 
 }
