@@ -1,33 +1,6 @@
 export default class Grid {
   constructor() {
     let that = this;
-    this.gridState = {
-      "11": 0,
-      "12": 0,
-      "13": 0,
-      "14": 0,
-      "15": 0,
-      "21": 0,
-      "22": 0,
-      "23": 0,
-      "24": 0,
-      "25": 0,
-      "31": 0,
-      "32": 0,
-      "33": 0,
-      "34": 0,
-      "35": 0,
-      "41": 0,
-      "42": 0,
-      "43": 0,
-      "44": 0,
-      "45": 0,
-      "51": 0,
-      "52": 0,
-      "53": 0,
-      "54": 0,
-      "55": 0,
-    };
     // draggables snap to droppables
     $(".reward-1").draggable({
       revert: "invalid",
@@ -67,20 +40,77 @@ export default class Grid {
     $(".drop1").droppable({
       accept: ".reward-1",
       drop: function (event, ui) {
-        that.gridState[ui.draggable[0].id] = 1;
-      },
+        //re-enable the droppable that was previously occupied 
+        if (ui.draggable[0].dataset.parent !== "r1-drop0") {
+          $(`#${ui.draggable[0].dataset.parent}`).droppable("option", "disabled", false);
+        }
+        // disable new droppable
+        if (event.target.id !== "r1-drop0") {
+          $(`#${event.target.id}`).droppable("option", "disabled", true);
+        }
+        //reset the draggable parent to the new droppable
+        ui.draggable[0].dataset.parent = event.target.id;
+      }
     });
     $(".drop2").droppable({
-      accept: ".reward-2"
+      accept: ".reward-2",
+      drop: function (event, ui) {
+        //re-enable the droppable that was previously occupied 
+        if (ui.draggable[0].dataset.parent !== "r2-drop0") {
+          $(`#${ui.draggable[0].dataset.parent}`).droppable("option", "disabled", false);
+        }
+        // disable new droppable
+        if (event.target.id !== "r2-drop0") {
+          $(`#${event.target.id}`).droppable("option", "disabled", true);
+        }
+        //reset the draggable parent to the new droppable
+        ui.draggable[0].dataset.parent = event.target.id;
+      }
     });
     $(".drop3").droppable({
-      accept: ".reward-3"
+      accept: ".reward-3",
+      drop: function (event, ui) {
+        //re-enable the droppable that was previously occupied 
+        if (ui.draggable[0].dataset.parent !== "r3-drop0") {
+          $(`#${ui.draggable[0].dataset.parent}`).droppable("option", "disabled", false);
+        }
+        // disable new droppable
+        if (event.target.id !== "r3-drop0") {
+          $(`#${event.target.id}`).droppable("option", "disabled", true);
+        }
+        //reset the draggable parent to the new droppable
+        ui.draggable[0].dataset.parent = event.target.id;
+      }
     });
     $(".drop4").droppable({
-      accept: ".reward-4"
+      accept: ".reward-4",
+      drop: function (event, ui) {
+        //re-enable the droppable that was previously occupied 
+        if (ui.draggable[0].dataset.parent !== "r4-drop0") {
+          $(`#${ui.draggable[0].dataset.parent}`).droppable("option", "disabled", false);
+        }
+        // disable new droppable
+        if (event.target.id !== "r4-drop0") {
+          $(`#${event.target.id}`).droppable("option", "disabled", true);
+        }
+        //reset the draggable parent to the new droppable
+        ui.draggable[0].dataset.parent = event.target.id;
+      }
     });
     $(".drop5").droppable({
-      accept: ".reward-5"
+      accept: ".reward-5",
+      drop: function (event, ui) {
+        //re-enable the droppable that was previously occupied 
+        if (ui.draggable[0].dataset.parent !== "r5-drop0") {
+          $(`#${ui.draggable[0].dataset.parent}`).droppable("option", "disabled", false);
+        }
+        // disable new droppable
+        if (event.target.id !== "r5-drop0") {
+          $(`#${event.target.id}`).droppable("option", "disabled", true);
+        }
+        //reset the draggable parent to the new droppable
+        ui.draggable[0].dataset.parent = event.target.id;
+      }
     });
 
     this.removeReward = this.removeReward.bind(this);
@@ -104,6 +134,7 @@ export default class Grid {
       snapMode: "inner",
       snapTolerance: 30
     });
+    $(`#${el.dataset.parent}`).droppable("option", "disabled", false);
     $(el).remove();
   }
 
