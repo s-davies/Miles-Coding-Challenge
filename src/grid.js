@@ -1,6 +1,14 @@
 export default class Grid {
   constructor() {
-    
+    //keep track of previous moves
+    this.allMoves = [];
+    this.allMovesIdx = -1;
+    //bind undo/redo
+    this.undo = this.undo.bind(this);
+    this.redo = this.redo.bind(this);
+    //add click event to undo/redo
+    $(`#undo`).on("click", this.undo);
+    $(`#redo`).on("click", this.redo);
     //bind removeReward function
     this.removeReward = this.removeReward.bind(this);
 
@@ -11,7 +19,7 @@ export default class Grid {
     $(".rewards-col div").on('mouseup', (e) => {
       $(".rewards-col div").css("cursor", "grab");
     });
-    
+    let that = this;//preserve context inside drop
     for (let i = 1; i < 6; i++) {
       // draggables snap to droppables
       $(`.reward-${i}`).draggable({
@@ -32,6 +40,10 @@ export default class Grid {
           if (event.target.id !== `r${i}-drop0`) {
             $(`#${event.target.id}`).droppable("option", "disabled", true);
           }
+          //save move to array
+          that.allMoves = that.allMoves.slice(0, that.allMovesIdx+1);
+          that.allMoves.push({ draggable: ui.draggable[0].id, prevDrop: ui.draggable[0].dataset.parent, curDrop: event.target.id});
+          that.allMovesIdx += 1;
           //reset the draggable parent to the new droppable
           ui.draggable[0].dataset.parent = event.target.id;
         }
@@ -43,52 +55,39 @@ export default class Grid {
   //////////////////////////////////////////////////////////////////////////////
   removeReward (event) {
     //get the draggable element to be removed
-    const el = event.target.parentElement;
-    //set the correct information for the new draggable that will be created
-    //and placed back at the beginning of the row
-    let eventPic;
-    let eventText;
-    switch (event.data.param1) {
-      case "1":
-        eventPic = "fas fa-pizza-slice";
-        eventText = "Pizza $";
-        break;
-      case "2":
-        eventPic = "fas fa-skiing";
-        eventText = "Ski Trip";
-        break;
-      case "3":
-        eventPic = "fas fa-paw";
-        eventText = "Pet Box";
-        break;
-      case "4":
-        eventPic = "far fa-credit-card";
-        eventText = "Gift Card";
-        break;
-      case "5":
-        eventPic = "fas fa-football-ball";
-        eventText = "Tickets";
-        break;
-      default:
-        break;
-    }
-    //re-add element to starting position of row
-    $(el.parentElement).append(
-      `<div class='reward-${event.data.param1}'><b>X</b><i class='${eventPic}'></i><h3>${eventText}</h3></div>`
-    );
-    //add click handler for new element's x
-    $(`.drop${event.data.param1} b`).click({ param1: `${event.data.param1}` }, this.removeReward);
-    //make new element draggable
-    $(`.reward-${event.data.param1}`).draggable({
-      revert: "invalid",
-      snap: `.drop${event.data.param1}`,
-      snapMode: "inner",
-      snapTolerance: 30
-    });
+    const draggable = event.target.parentElement;
     //reenable the previously disabled droppable element
-    $(`#${el.dataset.parent}`).droppable("option", "disabled", false);
-    //remove the element whose x was clicked
-    $(el).remove();
+    $(`#${draggable.dataset.parent}`).droppable("option", "disabled", false);
+    //move the draggable element back to starting position
+    $(draggable).position({
+      of: $(`#r${event.data.param1}-drop0`)
+    });
+    //save move to array
+    this.allMoves = this.allMoves.slice(0, this.allMovesIdx + 1);
+    this.allMoves.push({ draggable: draggable.id, prevDrop: draggable.dataset.parent, curDrop: `r${event.data.param1}-drop0` });
+    this.allMovesIdx += 1;
+    //reset parent info
+    draggable.dataset.parent = `r${event.data.param1}-drop0`;
+  }
+
+  undo (event) {
+    const moveData = this.allMoves[this.allMovesIdx];
+    //decrease the all moves index rather than pop array in case we need to redo
+    this.allMovesIdx -= 1;
+    const dropToEnable = $(`#${moveData.curDrop}`);
+    const dropToDisable = $(`#${moveData.prevDrop}`);
+    const draggable = $(`#${moveData.draggable}`);
+    dropToEnable.droppable("option", "disabled", false);
+    dropToDisable.droppable("option", "disabled", true);
+    draggable.position({
+      of: dropToDisable
+    });
+    //reset parent data for draggable element
+    draggable[0].dataset.parent = moveData.prevDrop;
+  }
+
+  redo (event) {
+
   }
 
 }

@@ -20,6 +20,23 @@ body > a {
   padding-top: 40px;
 }
 
+.undo-redo {
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.undo-redo div:hover {
+  color: #11AE42;
+}
+
+.undo-redo div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .grid-headers {
   width: 600px;
   height: 50px;
