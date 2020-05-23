@@ -124,8 +124,35 @@ export default class Grid {
   //////////////////////////////////////////////////////////////////////////////
   removeReward (event) {
     const el = event.target.parentElement;
+    let eventPic;
+    let eventText;
+    switch (event.data.param1) {
+      case "1":
+        eventPic = "fas fa-pizza-slice";
+        eventText = "Pizza $";
+        break;
+      case "2":
+        eventPic = "fas fa-skiing";
+        eventText = "Ski Trip";
+        break;
+      case "3":
+        eventPic = "fas fa-paw";
+        eventText = "Pet Box";
+        break;
+      case "4":
+        eventPic = "far fa-credit-card";
+        eventText = "Gift Card";
+        break;
+      case "5":
+        eventPic = "fas fa-football-ball";
+        eventText = "Tickets";
+        break;
+      default:
+        break;
+    }
+
     $(el.parentElement).append(
-      `<div class='reward-${event.data.param1}'><b>X</b><h3>R${event.data.param1}</h3></div>`
+      `<div class='reward-${event.data.param1}'><b>X</b><i class='${eventPic}'></i><h3>${eventText}</h3></div>`
     );
     $(`.drop${event.data.param1} b`).click({ param1: '1' }, this.removeReward);
     $(`.reward-${event.data.param1}`).draggable({
