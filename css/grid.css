@@ -14,23 +14,40 @@ body > h1 {
   padding-bottom: 40px;
 }
 
-body > a {
-  font-size: 20px;
+body a {
+  font-size: 30px;
   color: white;
+}
+body a:first-of-type {
+  padding-right: 20px;
+}
+
+body > div:last-of-type {
   padding-top: 40px;
+  display: flex;
+}
+
+body > div:last-of-type a:hover {
+  color: #E0E8EE;
 }
 
 .undo-redo {
   display: flex;
   justify-content: center;
+  
+}
+
+.undo-redo button:hover {
+  color: #11AE42;
   cursor: pointer;
 }
 
-.undo-redo div:hover {
-  color: #11AE42;
+.undo-redo button:disabled {
+  color: gray;
+  cursor: initial;
 }
 
-.undo-redo div {
+.undo-redo button {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -182,5 +199,28 @@ h3 {
   right: 2px;
   cursor: pointer;
   font-size: 10px;
+}
+
+.rewards-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#reset {
+  width: 50%;
+  cursor: pointer;
+  margin-top: 5px;
+  background-color: rgb(236, 236, 236);
+  border: 1px solid rgb(199, 199, 199);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  padding-top: 1px;
+}
+
+#reset:hover {
+  /* background-color: rgb(189, 189, 189); */
+  color: #11AE42;
 }
 

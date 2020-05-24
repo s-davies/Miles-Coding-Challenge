@@ -3,12 +3,14 @@ export default class Grid {
     //keep track of previous moves
     this.allMoves = [];
     this.allMovesIdx = -1;
-    //bind undo/redo
+    //bind undo/redo and reset
     this.undo = this.undo.bind(this);
     this.redo = this.redo.bind(this);
-    //add click event to undo/redo
+    this.reset = this.reset.bind(this);
+    //add click event to undo/redo and reset
     $(`#undo`).on("click", this.undo);
     $(`#redo`).on("click", this.redo);
+    $(`#reset`).on("click", this.reset);
     //bind removeReward function
     this.removeReward = this.removeReward.bind(this);
 
@@ -44,6 +46,12 @@ export default class Grid {
           that.allMoves = that.allMoves.slice(0, that.allMovesIdx+1);
           that.allMoves.push({ draggable: ui.draggable[0].id, prevDrop: ui.draggable[0].dataset.parent, curDrop: event.target.id});
           that.allMovesIdx += 1;
+          //save to localStorage
+          that.persist();
+          //re-enable undo button
+          $(`#undo`).prop("disabled", false);
+          //disable redo button
+          $(`#redo`).prop("disabled", true);
           //reset the draggable parent to the new droppable
           ui.draggable[0].dataset.parent = event.target.id;
         }
@@ -51,23 +59,34 @@ export default class Grid {
       //add click handler to upper right x to remove reward
       $(`.drop${i} b`).click({ param1: `${i}` }, this.removeReward);
     }
+    //trigger reload from localStorage
+    this.restart();
   }
   //////////////////////////////////////////////////////////////////////////////
   removeReward (event) {
     //get the draggable element to be removed
     const draggable = event.target.parentElement;
-    //reenable the previously disabled droppable element
-    $(`#${draggable.dataset.parent}`).droppable("option", "disabled", false);
-    //move the draggable element back to starting position
-    $(draggable).position({
-      of: $(`#r${event.data.param1}-drop0`)
-    });
-    //save move to array
-    this.allMoves = this.allMoves.slice(0, this.allMovesIdx + 1);
-    this.allMoves.push({ draggable: draggable.id, prevDrop: draggable.dataset.parent, curDrop: `r${event.data.param1}-drop0` });
-    this.allMovesIdx += 1;
-    //reset parent info
-    draggable.dataset.parent = `r${event.data.param1}-drop0`;
+    //don't make do anything if x is clicked when draggable is at starting
+    if (!draggable.dataset.parent.endsWith('drop0')) {
+      //reenable the previously disabled droppable element
+      $(`#${draggable.dataset.parent}`).droppable("option", "disabled", false);
+      //move the draggable element back to starting position
+      $(draggable).position({
+        of: $(`#r${event.data.param1}-drop0`)
+      });
+      //save move to array
+      this.allMoves = this.allMoves.slice(0, this.allMovesIdx + 1);
+      this.allMoves.push({ draggable: draggable.id, prevDrop: draggable.dataset.parent, curDrop: `r${event.data.param1}-drop0` });
+      this.allMovesIdx += 1;
+      //save to localStorage
+      this.persist();
+      //re-enable undo button
+      $(`#undo`).prop("disabled", false);
+      //disable redo button
+      $(`#redo`).prop("disabled", true);
+      //reset parent info
+      draggable.dataset.parent = `r${event.data.param1}-drop0`;
+    }
   }
 
   undo (event) {
@@ -78,12 +97,18 @@ export default class Grid {
     const dropToDisable = $(`#${moveData.prevDrop}`);
     const draggable = $(`#${moveData.draggable}`);
     dropToEnable.droppable("option", "disabled", false);
-    dropToDisable.droppable("option", "disabled", true);
+    if (!dropToDisable[0].id.endsWith('drop0')) dropToDisable.droppable("option", "disabled", true);
     draggable.position({
       of: dropToDisable
     });
     //reset parent data for draggable element
     draggable[0].dataset.parent = moveData.prevDrop;
+    //disable undo button if there are no moves to undo
+    if (this.allMovesIdx === -1) $(`#undo`).prop("disabled", true);
+    //enable redo button
+    $(`#redo`).prop("disabled", false);
+    //save to localStorage
+    this.persist();
   }
 
   redo (event) {
@@ -93,12 +118,47 @@ export default class Grid {
     const dropToDisable = $(`#${moveData.curDrop}`);
     const draggable = $(`#${moveData.draggable}`);
     dropToEnable.droppable("option", "disabled", false);
-    dropToDisable.droppable("option", "disabled", true);
+    if (!dropToDisable[0].id.endsWith('drop0')) dropToDisable.droppable("option", "disabled", true);
     draggable.position({
       of: dropToDisable
     });
     //reset parent data for draggable element
     draggable[0].dataset.parent = moveData.curDrop;
+    //disable undo button if there are no moves to redo
+    if (this.allMovesIdx === this.allMoves.length - 1) $(`#redo`).prop("disabled", true);
+    //enable undo button
+    $(`#undo`).prop("disabled", false);
+    //save to localStorage
+    this.persist();
+  }
+
+  persist () {
+    localStorage.setItem("allMoves", JSON.stringify(this.allMoves));
+    localStorage.setItem("allMovesIdx", JSON.stringify(this.allMovesIdx));
+  }
+
+  restart() {
+    if (localStorage.getItem("allMoves")) {
+      const allMoves = JSON.parse(localStorage.getItem("allMoves"));
+      const allMovesIdx = JSON.parse(localStorage.getItem("allMovesIdx"));
+      this.allMoves = allMoves;
+      //redo every move until the current idx
+      for (let i = 0; i <= allMovesIdx; i++) {
+        this.redo();
+      }
+      //enable redo button if there are redo moves left
+      if (allMovesIdx < allMoves.length - 1) $(`#redo`).prop("disabled", false);
+    }
+  }
+
+  reset() {
+    for (let i = this.allMovesIdx; i >= 0 ; i--) {
+      this.undo();
+    }
+    this.allMoves = [];
+    this.allMovesIdx = -1;
+    $(`#redo`).prop("disabled", true);
+    this.persist();
   }
 
 }
