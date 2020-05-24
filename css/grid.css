@@ -9,9 +9,9 @@ body {
 }
 
 body > h1 {
-  font-size: 40px;
+  font-size: 30px;
   color: white;
-  padding-bottom: 40px;
+  padding-bottom: 15px;
 }
 
 body a {
@@ -26,7 +26,7 @@ h5 {
 }
 
 body > div:last-of-type {
-  padding-top: 40px;
+  padding-top: 10px;
   display: flex;
   color: white;
 }
@@ -120,7 +120,7 @@ body > div:last-of-type a:hover {
 
 .grid {
   width: 600px;
-  height: 500px;
+  height: 400px;
   display: flex;
 }
 
